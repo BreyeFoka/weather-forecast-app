@@ -1,25 +1,30 @@
-import logo from './logo.svg';
 import './App.css';
+ import {useState} from 'react'
+ import SearchBar from './components/SearchBar';
+import CurrentWeather from './components/CurrentWeather';
+import ForecastChart from './components/ForecastChart';
+import { fetchWeather, fetchForecast } from './wheatherService';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+const App = () => {
+  const [currentWeather, setCurrentWeather] = useState(null)
+  const [forecast, setForecast] = useState(null)
+
+  const handleSearch = async (location) => {
+      const weatherres = await fetchWeather(location)
+      setCurrentWeather(weatherres.data)
+
+      const forecastres = await fetchForecast(location)
+      setForecast(forecastres.data)
+  }
+
+  return(
+    <div>
+      <SearchBar onSearch={handleSearch}/>
+      {currentWeather && <CurrentWeather data={currentWeather}/>}
+      {forecast && <ForecastChart data={forecast}/>}
     </div>
-  );
+  )
+  
 }
 
 export default App;
